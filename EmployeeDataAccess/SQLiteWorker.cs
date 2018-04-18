@@ -12,22 +12,21 @@ namespace EmployeeDataAccess
 {
     public class SQLiteWorker
     {
-        protected SQLiteConnection Connection;
         protected SQLiteCommand Command;
+        static string _connectionString;
 
         public SQLiteWorker()
         {
-            var connectionString = ConfigurationManager.ConnectionStrings["EmployeeDataAccess.SQLiteConnection"].ToString();
-            Connection = new SQLiteConnection(connectionString);
+             _connectionString = ConfigurationManager.ConnectionStrings["EmployeeDataAccess.SQLiteConnection"].ToString();
         }
 
         public IEnumerable<EmployeeModel> GetEmploees()
         {
             IEnumerable<EmployeeModel> employees;
             
-            using (IDbConnection connection = Connection )
+            using (IDbConnection connection = new SQLiteConnection(_connectionString) )
             {
-                employees = connection.Query<EmployeeModel>("select * from employees").ToList();
+                employees = connection.Query<EmployeeModel>($"select * from employees").ToList();
             }
 
             return employees;
@@ -36,12 +35,44 @@ namespace EmployeeDataAccess
         public EmployeeModel GetEmployee(int id)
         {
             EmployeeModel employee;
-            using (IDbConnection connection = Connection)
+            using (IDbConnection connection = new SQLiteConnection(_connectionString))
             {
                 employee = connection.Query<EmployeeModel>($"select * from employees where id = {id}").FirstOrDefault();
             }
 
             return employee;
+        }
+
+        public EmployeeModel AddNewEmployee(EmployeeModel employee)
+        {
+
+            using (IDbConnection connection = new SQLiteConnection(_connectionString))
+            {
+                  employee.Id =  connection.Query<int>(
+                        "Insert into Employees (FirstName, LastName, Gender) " +
+                        $"values ('{employee.FirstName}', '{employee.LastName}', '{employee.Gender}'); " +
+                        "select last_insert_rowid()").FirstOrDefault();
+            }
+
+            return employee;
+        }
+
+        public void DeleteEmpolyee(int id)
+        {
+            using (IDbConnection connection = new SQLiteConnection(_connectionString))
+            {
+                connection.Execute($"delete from Employees where id={id}");
+            }
+        }
+
+        public void UpdateEmployee(int id, EmployeeModel employee)
+        {
+            using (IDbConnection connection =  new SQLiteConnection(_connectionString))
+            {
+                connection.Execute($"update Employees set FirstName = '{employee.FirstName}', " +
+                                   $"LastName = '{employee.LastName}'," +
+                                   $"Gender = '{employee.Gender}' where id = {id}");
+            }
         }
     }
 }
