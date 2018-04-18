@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8"/>
+    <script src="Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var employees = $('#employees');
+            $('#btnLoad').click(function() {
+                $.ajax({
+                    type: 'GET',
+                    url: 'api/employees',
+                    dataType: 'json',
+                    success: function(data) {
+                        employees.empty();
+                        $.each(data, function(index, val) {
+                            var fullName = val.FirstName + ' ' + val.LastName;
+                            employees.append('<li>' + fullName + '</li>');
+                        });
+                    }
+                });
+            });
+
+            $('#btnClear').click(function() {
+                employees.empty();
+            });
+        });
+    </script>
+</head>
+<body>
+<input id="btnLoad" type="button" value="Get list of all employees"/>
+<input id="btnClear" type="button" value="Clear page"/>
+<ul id="employees"></ul>
+</body>
+</html>
