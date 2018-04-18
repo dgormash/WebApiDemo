@@ -2,7 +2,7 @@
 <html>
 <head>
     <title></title>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <script src="Scripts/jquery-1.10.2.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -10,7 +10,7 @@
             $('#btnLoad').click(function() {
                 $.ajax({
                     type: 'GET',
-                    url: 'api/employees',
+                    url: 'http://localhost:50780/api/employees',
                     dataType: 'jsonp',
                     success: function(data) {
                         employees.empty();
@@ -29,8 +29,9 @@
     </script>
 </head>
 <body>
-<input id="btnLoad" type="button" value="Get list of all employees"/>
-<input id="btnClear" type="button" value="Clear page"/>
-<ul id="employees"></ul>
+    <input id="btnLoad" type="button" value="Get list of all employees" />
+    <input id="btnClear" type="button" value="Clear page" />
+    <ul id="employees"></ul>
 </body>
 </html>
+
