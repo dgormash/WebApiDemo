@@ -3,31 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Batch;
+using System.Web.Http.Cors;
 using EmployeeDataAccess;
 
 namespace WebApiDemo.Controllers
 {
+    [EnableCors("http://localhost:52926", "*", "GET, POST")]
     public class EmployeesController : ApiController
     {
         protected SQLiteWorker DBaseWorker = new SQLiteWorker();
+
+        [BasicAuthorization]
         public HttpResponseMessage Get(string gender = "All")
         {
-            switch (gender.ToLower())
+            string username = Thread.CurrentPrincipal.Identity.Name; 
+
+            switch (username.ToLower())
             {
-                case "all":
-                    return Request.CreateResponse(HttpStatusCode.OK, DBaseWorker.GetEmploees().ToList());
                 case "male":
                     return Request.CreateResponse(HttpStatusCode.OK, DBaseWorker.GetEmploees().Where(e => e.Gender.ToLower() == "м").ToList());
                 case "female":
                     return Request.CreateResponse(HttpStatusCode.OK, DBaseWorker.GetEmploees().Where(e => e.Gender.ToLower() == "ж").ToList());
                 default:
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest,
-                        $"Value for gender must be All, Male or Female. {gender} is not valid parameter");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
         }
 
+        [DisableCors]
         public HttpResponseMessage Get(int id)
         {
             var employee = DBaseWorker.GetEmployee(id);

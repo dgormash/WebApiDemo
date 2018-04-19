@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
 using WebApiContrib.Formatting.Jsonp;
@@ -27,8 +28,15 @@ namespace WebApiDemo
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            var jsonpFormatter = new JsonpMediaTypeFormatter(config.Formatters.JsonFormatter);
-            config.Formatters.Insert(0, jsonpFormatter);
+
+            //EnableCorsAttribute cors = new EnableCorsAttribute("http://localhost:52926", "*", "GET, POST");
+            //config.EnableCors(cors);
+
+            //config.EnableCors();
+            //config.Filters.Add(new RequireHttpsAttribute());
+
+            //var jsonpFormatter = new JsonpMediaTypeFormatter(config.Formatters.JsonFormatter);
+            //config.Formatters.Insert(0, jsonpFormatter);
         }
     }
 }

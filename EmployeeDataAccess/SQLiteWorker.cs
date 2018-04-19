@@ -74,5 +74,18 @@ namespace EmployeeDataAccess
                                    $"Gender = '{employee.Gender}' where id = {id}");
             }
         }
+
+        public bool FindeUser(string login, string password)
+        {
+
+            using (IDbConnection connection = new SQLiteConnection(_connectionString))
+            {
+              var  user = connection.Query<UserModel>(
+                        $"select * from users where username='{login}' and userpassword = '{password}'").FirstOrDefault();
+                return user != null;
+                
+
+            }
+        }
     }
 }
