@@ -7,17 +7,29 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var employees = $('#employees');
-            $('#btnLoad').click(function() {
+            $('#btnLoad').click(function () {
+                var username = $('#txtUserName').val();
+                var password = $('#txtUserPassword').val();
+
                 $.ajax({
                     type: 'GET',
                     url: 'api/employees',
                     dataType: 'json',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password)
+                    },
                     success: function(data) {
                         employees.empty();
                         $.each(data, function(index, val) {
                             var fullName = val.FirstName + ' ' + val.LastName;
-                            employees.append('<li>' + fullName + '</li>');
+                            employees.append('<li>' + fullName + ' (' + val.Gender + ')</li>');
                         });
+                    },
+                    complete: function (jqXhr) {
+                        if (jqXhr.status == '401') {
+                            employees.empty();
+                            employees.append('<li style="color:red">' + jqXhr.status + ':' + jqXhr.statusText + '</li>');
+                        }
                     }
                 });
             });
@@ -29,6 +41,9 @@
     </script>
 </head>
 <body>
+    Username: <input type="text" id="txtUserName" />
+    Password: <input type="password" id="txtUserPassword" />
+    <br /><br />
 <input id="btnLoad" type="button" value="Get list of all employees"/>
 <input id="btnClear" type="button" value="Clear page"/>
 <ul id="employees"></ul>

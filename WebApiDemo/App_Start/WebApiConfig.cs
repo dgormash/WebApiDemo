@@ -32,7 +32,7 @@ namespace WebApiDemo
             //EnableCorsAttribute cors = new EnableCorsAttribute("http://localhost:52926", "*", "GET, POST");
             //config.EnableCors(cors);
 
-            //config.EnableCors();
+            config.EnableCors(); //for cross domain requests with [EnableCors] attribute
             //config.Filters.Add(new RequireHttpsAttribute());
 
             //var jsonpFormatter = new JsonpMediaTypeFormatter(config.Formatters.JsonFormatter);
